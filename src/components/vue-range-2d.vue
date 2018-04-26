@@ -1,6 +1,6 @@
 <template>
-  <div class="vue-range-2d" ref="area">
-    <canvas :width="realArea.width" :height="realArea.height"></canvas>
+  <div class="vue-range-2d" ref="area" :style="{height: realArea.height + 'px'}">
+    <canvas :width="realArea.width" :height="realArea.height" ref="canvas"></canvas>
     <div class="range-box">
       <span class="range-pointer pointer1"
         :style="{left: range.left, top: range.top}"
@@ -80,6 +80,10 @@ export default {
       range_bottom: 0,
       startX: 0,
       startY: 0,
+      // canvas context
+      ctx: null,
+      // 图片DoM
+      image: null,
       middleware: [
         this.minRangeLimit,
         this.topRange,
@@ -101,7 +105,8 @@ export default {
     rangeLeft: [String, Number],
     isFullRange: {
       default: false
-    }
+    },
+    imageUrl: [String]
   },
   methods: {
     // 以区域中心为原点的坐标值
@@ -194,6 +199,7 @@ export default {
     },
     // set offsetWidth
     setOffsetWidth: function () {
+      console.log('init width: ' + this.$refs.area.clientWidth)
       this.offsetWidth = this.$refs.area.clientWidth
     },
     // 最小选区限制
@@ -324,6 +330,8 @@ export default {
       this.range_right = right
       this.range_bottom = bottom
       this.range_left = left
+
+      this.$nextTick(this.drawCanvas)
     },
     // 转换为canvas上的坐标
     toCanvasPos: function ({top, right, bottom, left}) {
@@ -337,6 +345,65 @@ export default {
         bottom: bottom * rate,
         left: left * rate
       }
+    },
+    // 绘制图片
+    initImage: function () {
+      if(this.imageUrl) {
+        let image = new Image ()
+        image.setAttribute('src', this.imageUrl)
+        image.onload = () => {
+          this.image = image
+          this.drawCanvas()
+        }
+        image.onerror = (e) => {
+          console.log(e)
+        }
+      }
+    },
+    drawCanvas: function () {
+      // 清空
+      this.ctx.globalAlpha = 1
+      this.ctx.clearRect(0, 0, this.realArea.width, this.realArea.height);
+      if (this.image) {
+        this.ctx.drawImage(this.image, 0, 0, this.realArea.width, this.realArea.height)
+      }
+      this.drawShadow()
+    },
+    drawShadow: function () {
+      this.ctx.globalAlpha = 0.5
+      this.ctx.fillStyle = "black";
+      this.ctx.beginPath();
+      // 利用非0环绕数规则，绘制非选中区域
+      // 逆时针边界
+      this.ctx.moveTo(0, 0)
+      this.ctx.lineTo(0, this.realArea.height)
+      this.ctx.lineTo(this.realArea.width, this.realArea.height)
+      this.ctx.lineTo(this.realArea.width, 0)
+      this.ctx.moveTo(0, 0)
+      // 顺时针选区
+      this.ctx.rect(
+        this.range_left,
+        this.range_top,
+        this.range_right- this.range_left,
+        this.range_bottom - this.range_top
+      )
+      // this.ctx.moveTo(this.range_left, this.range_top)
+      // this.ctx.lineTo(this.range_left, this.range_bottom)
+      // this.ctx.lineTo(this.range_right, this.range_bottom)
+      // this.ctx.lineTo(this.range_right, this.range_top)
+      // this.ctx.lineTo(this.range_left, this.range_top)
+      // 利用4个矩形绘制路径
+      // // 顶部未选中区域
+      // this.ctx.rect(0, 0, this.realArea.width, this.range_top)
+      // // 右侧未选中区域
+      // this.ctx.rect(this.range_right, 0, this.realArea.width - this.range_right, this.realArea.height)
+      // // 底部未选中区域
+      // this.ctx.rect(0, this.range_bottom, this.realArea.width, this.realArea.height - this.range_bottom)
+      // // 左侧未选中区域
+      // this.ctx.rect(0, 0, this.range_left, this.realArea.height)
+      this.ctx.fill()
+      this.ctx.closePath();
+      
     }
   },
   computed: {
@@ -375,9 +442,16 @@ export default {
       }
     }
   },
+  watch: {
+    range: function (val, oldval) {
+      this.drawCanvas()
+    }
+  },
   mounted: function () {
-    this.setOffsetWidth()
-    this.$nextTick(this.posInit())
+    this.ctx = this.$refs.canvas.getContext('2d')
+    this.$nextTick(this.setOffsetWidth)
+    this.$nextTick(this.posInit)
+    this.$nextTick(this.initImage)
     this.range_right = this.realArea.width
     this.range_bottom = this.realArea.height
   } 
@@ -396,7 +470,10 @@ $range-color: #39f;
 }
 .vue-range-2d {
   position: relative;
-
+  width: 100%;
+  canvas {
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA3NCSVQICAjb4U/gAAAABlBMVEXMzMz////TjRV2AAAACXBIWXMAAArrAAAK6wGCiw1aAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABFJREFUCJlj+M/AgBVhF/0PAH6/D/HkDxOGAAAAAElFTkSuQmCC")
+  }
   .range-box {
     position: absolute;
     @include position-full;
