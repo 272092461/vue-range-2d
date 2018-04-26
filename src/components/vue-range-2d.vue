@@ -98,7 +98,10 @@ export default {
     rangeTop: [String, Number],
     rangeRight: [String, Number],
     rangeBottom: [String, Number],
-    rangeLeft: [String, Number]
+    rangeLeft: [String, Number],
+    isFullRange: {
+      default: false
+    }
   },
   methods: {
     // 以区域中心为原点的坐标值
@@ -301,16 +304,22 @@ export default {
       }
     },
     posInit: function () {
+      if(this.isFullRange) {
+        this.range_top = 0
+        this.range_right = this.realArea.width
+        this.range_bottom = this.realArea.height
+        this.range_left = 0
+        return
+      }
       let pos = {
         top: parseInt(this.rangeTop),
         right: parseInt(this.rangeRight),
         bottom: parseInt(this.rangeBottom),
         left: parseInt(this.rangeLeft),
       }
-      console.log('pos')
-      console.log(this.rangeTop)
+
       let {top, right, bottom, left} = this.toCanvasPos(pos)
-      console.log(this.toCanvasPos(pos))
+  
       this.range_top = top
       this.range_right = right
       this.range_bottom = bottom
