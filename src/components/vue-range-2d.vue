@@ -106,9 +106,45 @@ export default {
     isFullRange: {
       default: false
     },
-    imageUrl: [String]
+    imageUrl: [String],
+    quality: {
+      default: 1
+    },
+    mimeType: {
+      default: 'image/png'
+    }
   },
   methods: {
+    // range to blob
+    getImageBlob: function (callback) {
+      return new Promise ((res, rej) => {
+        const canvas = this.createRangeCanvas()
+        canvas.toBlob((blob) => {
+          res(blob)
+          callback && callback(blob)
+        }, this.mimeType, this.quality)
+      })
+    },
+    // range to DataUrl
+    getImageData: function (callback) {
+      return this.createRangeCanvas().toDataURL(this.mineType, this.quality)
+    },
+    // 创建选区内的图片canvas
+    createRangeCanvas: function () {
+      const canvas = document.createElement('canvas')
+      const {top, right, bottom, left} = this.getRange()
+      const width = right - left
+      const height = bottom - top
+      const naturalWidth = this.image.naturalWidth
+      const naturalHeight = this.image.naturalHeight
+      const rate = naturalWidth / this.width
+      canvas.setAttribute('width', width)
+      canvas.setAttribute('height', height)
+      
+      let context = canvas.getContext('2d')
+      context.drawImage(this.image, left * rate, top * rate, width * rate, height * rate, 0, 0, width, height)
+      return canvas
+    },
     // 以区域中心为原点的坐标值
     getRangeCenter: function () {
       let halfWidth = this.width / 2

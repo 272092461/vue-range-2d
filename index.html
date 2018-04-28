@@ -16,6 +16,7 @@
   <div id="app">
     <div class="main">
       <v-range
+        ref="range"
         range-max-width="1920"
         range-max-height="1080"
         range-min-width="250"
@@ -29,6 +30,8 @@
       >
       </v-range>
     </div>
+    <button @click="getImage">click</button>
+    <img :src="image" alt="">
   </div>
 </body>
 </html>
