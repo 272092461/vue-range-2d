@@ -199,7 +199,6 @@ export default {
     },
     // set offsetWidth
     setOffsetWidth: function () {
-      console.log('init width: ' + this.$refs.area.clientWidth)
       this.offsetWidth = this.$refs.area.clientWidth
     },
     // 最小选区限制
