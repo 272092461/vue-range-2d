@@ -335,9 +335,6 @@ export default {
     // 转换为canvas上的坐标
     toCanvasPos: function ({top, right, bottom, left}) {
       let rate = this.realArea.width / this.width
-      console.log(this.realArea.width)
-      console.log(this.width)
-      console.log({top, right, bottom, left})
       return {
         top: top * rate,
         right: right * rate,
