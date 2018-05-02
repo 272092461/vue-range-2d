@@ -2,6 +2,11 @@
   "name": "vue-range-2d", 
   "version": "0.0.1",
   "main": "./dist/vue-range-2d.js",
+  "description": "vue 2D range selector",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/272092461/vue-range-2d.git"
+  },
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",

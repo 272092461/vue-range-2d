@@ -3,7 +3,7 @@
 ## 参数
 
 ```html
-<!-- 基于webpack组件化开发 -->
+<!-- 基于.vue组件化开发 -->
 <vue-range-2d
   ref="range"
   :imgUrl="option.img"

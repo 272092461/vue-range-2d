@@ -10,6 +10,9 @@
       max-width: 1200px;
       margin: auto;
     }
+    .text-center {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -30,8 +33,12 @@
       >
       </v-range>
     </div>
-    <button @click="getImage">click</button>
-    <img :src="image" alt="">
+    <div class="text-center">
+      <button @click="getImage">截图</button>
+    </div>
+    <div>
+      <img :src="image" alt="">
+    </div>
   </div>
 </body>
 </html>
