@@ -1,5 +1,12 @@
 # vue 2D坐标选择及图片裁剪工具
 
+## 使用 
+
+```bash
+npm i --save vue-range-2d
+import vueRange from 'vue-range-2d'
+```
+
 ## 效果预览
 
 ```bash
