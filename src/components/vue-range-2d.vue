@@ -1,5 +1,5 @@
 <template>
-  <div class="vue-range-2d" ref="area" :style="{height: realArea.height + 'px'}">
+  <div class="vue-range-2d" ref="area" :style="{height: realArea.height}">
     <canvas :width="realArea.width" :height="realArea.height" ref="canvas"></canvas>
     <div class="range-box">
       <span class="range-pointer pointer1"
