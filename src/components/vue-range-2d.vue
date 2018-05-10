@@ -1,5 +1,5 @@
 <template>
-  <div class="vue-range-2d" ref="area" :style="{height: realArea.height}">
+  <div class="vue-range-2d" ref="area" :style="{height: realArea.height + 'px'}">
     <canvas :width="realArea.width" :height="realArea.height" ref="canvas"></canvas>
     <div class="range-box">
       <span class="range-pointer pointer1"
@@ -140,8 +140,6 @@ export default {
       const rate = naturalWidth / this.width
       canvas.setAttribute('width', width)
       canvas.setAttribute('height', height)
-      debugger
-      console.log('try')
       let context = canvas.getContext('2d')
       context.drawImage(this.image, left * rate, top * rate, width * rate, height * rate, 0, 0, width, height)
       return canvas
